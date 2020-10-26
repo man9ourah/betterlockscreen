@@ -87,17 +87,18 @@ lock() {
 
 	i3lock \
 		-t -i "$1" \
-		--timepos='x+110:h-70' \
-		--datepos='x+43:h-45' \
-		--clock --date-align 1 --datestr "$locktext" \
+		--screen=1 -e\
+		--timepos='x+w/2:y+h/2' \
+		--datepos='x+w/2:y+h/2+75' \
+		--clock --datestr "%A, %B %e, %Y" \
 		--insidecolor=$insidecolor --ringcolor=$ringcolor --line-uses-inside \
 		--keyhlcolor=$keyhlcolor --bshlcolor=$bshlcolor --separatorcolor=$separatorcolor \
 		--insidevercolor=$insidevercolor --insidewrongcolor=$insidewrongcolor \
-		--ringvercolor=$ringvercolor --ringwrongcolor=$ringwrongcolor --indpos='x+280:h-70' \
-		--radius=20 --ring-width=4 --veriftext='' --wrongtext='' \
+		--ringvercolor=$ringvercolor --ringwrongcolor=$ringwrongcolor --indpos='x+w/2:y+h/2-300' \
+		--radius=32 --ring-width=2 --veriftext='' --wrongtext='' --color='00000000'\
 		--verifcolor="$verifcolor" --timecolor="$timecolor" --datecolor="$datecolor" \
-		--time-font="$font" --date-font="$font" --layout-font="$font" --verif-font="$font" --wrong-font="$font" \
-		--noinputtext='' --force-clock --pass-media-keys $lockargs
+		--time-font="$font" --timesize=120 --datesize=40 --date-font="$font" --layout-font="$font" --verif-font="$font" --wrong-font="$font" \
+		--noinputtext='' --force-clock $lockargs
 
 }
 
@@ -192,11 +193,18 @@ update() {
 	[[ $blur_level ]] || blur_level=1
 
 	rectangles=" "
-	SR=$(xrandr --query | grep ' connected' | grep -o '[0-9][0-9]*x[0-9][0-9]*[^ ]*')
+	SR=$(xrandr --query | grep ' connected primary' | grep -o '[0-9][0-9]*x[0-9][0-9]*[^ ]*')
 	for RES in $SR; do
 		SRA=(${RES//[x+]/ })
-		CX=$((SRA[2] + $(logical_px 25 1)))
-		CY=$((SRA[1] - $(logical_px 30 2)))
+		MX=$((SRA[0] / 2))
+		MY=$((SRA[1] / 2))
+		echo "RES: $RES"
+		echo "SRA: ${SRA[*]}"
+		echo "SRA[1]: ${SRA[0]}"
+		echo "SRA[2]: ${SRA[1]}"
+		echo "MX: $MX, MY:$MY"
+		CX=$(($(logical_px $MX 1) - 24))
+		CY=$((SRA[1] - $(logical_px $MY 2) + 5))
 		rectangles+="rectangle $CX,$CY $((CX+$(logical_px 300 1))),$((CY-$(logical_px 80 2))) "
 	done
 
@@ -264,19 +272,24 @@ update() {
 	echo
 	echo 'Caching images for faster screen locking'
 	# resized
-	convert "$resized" -draw "fill #$loginbox $rectangles" "$l_resized"
+	#convert "$resized" -draw "fill #$loginbox $rectangles" "$l_resized"
+	convert "$resized" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_resized"
 
 	# dim
-	convert "$dim" -draw "fill #$loginbox $rectangles" "$l_dim"
+	#convert "$dim" -draw "fill #$loginbox $rectangles" "$l_dim"
+	convert "$dim" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_dim"
 
 	# blur
-	convert "$blur" -draw "fill #$loginbox $rectangles" "$l_blur"
+	#convert "$blur" -draw "fill #$loginbox $rectangles" "$l_blur"
+	convert "$blur" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_blur"
 
 	# dimblur
-	convert "$dimblur" -draw "fill #$loginbox $rectangles" "$l_dimblur"
+	#convert "$dimblur" -draw "fill #$loginbox $rectangles" "$l_dimblur"
+	convert "$dimblur" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_dimblur"
 
 	# pixel
-	convert "$pixel" -draw "fill #$loginbox $rectangles" "$l_pixel"
+	#convert "$pixel" -draw "fill #$loginbox $rectangles" "$l_pixel"
+	convert "$pixel" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_pixel"
 	echo
 	echo 'All required changes have been applied'
 }
