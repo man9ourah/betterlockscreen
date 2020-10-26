@@ -15,19 +15,19 @@ init_filenames() {
 	# copy this block to ~/.config/betterlockscreenrc" to customize
 	insidecolor=00000000
 	ringcolor=ffffffff
-	keyhlcolor=d23c3dff
-	bshlcolor=d23c3dff
+	keyhlcolor=3ba347ff
+	bshlcolor=3ba347ff
 	separatorcolor=00000000
 	insidevercolor=00000000
-	insidewrongcolor=d23c3dff
-	ringvercolor=ffffffff
-	ringwrongcolor=ffffffff
-	verifcolor=ffffffff
+	insidewrongcolor=00000000
+	ringvercolor=00000000
+	ringwrongcolor=d23c3dff
+	verifcolor=00000000
 	timecolor=ffffffff
 	datecolor=ffffffff
-	loginbox=00000066
-	font="sans-serif"
-	locktext='Type password to unlock...'
+	loginbox=00000000
+	font="Klinic Slab Book"
+	locktext=''
 	wallpaper_cmd='feh --bg-fill --no-fehbg'
 
 	# override defaults with config
