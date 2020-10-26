@@ -98,7 +98,7 @@ lock() {
 		--radius=32 --ring-width=2 --veriftext='' --wrongtext='' --color='00000000'\
 		--verifcolor="$verifcolor" --timecolor="$timecolor" --datecolor="$datecolor" \
 		--time-font="$font" --timesize=120 --datesize=40 --date-font="$font" --layout-font="$font" --verif-font="$font" --wrong-font="$font" \
-		--noinputtext='' --force-clock $lockargs
+		--noinputtext='' --pass-media-keys --force-clock $lockargs
 
 }
 
