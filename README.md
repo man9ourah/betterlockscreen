@@ -1,5 +1,12 @@
 # betterlockscreen
 
+### Changes of this fork:
+A small lock symbol is drawn on the chosen image, and the unlocking ring is
+drawn around it with keypress. 
+![screenshot-lock.png](./screenshot-lock.png)
+
+Plus a small install script for my environment.
+
 > simple, minimal lockscreen
 
 Betterlockscreen allows you to cache images with different filters and lockscreen with blazing speed.
