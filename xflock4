@@ -1,0 +1,3 @@
+#!/bin/bash
+
+betterlockscreen -l dimblur --off 10 2&> /dev/null
