@@ -7,6 +7,8 @@ drawn around it with keypress.
 
 Plus a small install script for my environment.
 
+--------------------------------------------------------------------------------
+
 > simple, minimal lockscreen
 
 Betterlockscreen allows you to cache images with different filters and lockscreen with blazing speed.
