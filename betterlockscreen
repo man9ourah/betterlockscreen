@@ -192,7 +192,6 @@ update() {
 	# default blur level; fallback to 1
 	[[ $blur_level ]] || blur_level=1
 
-	rectangles=" "
 	SR=$(xrandr --query | grep ' connected primary' | grep -o '[0-9][0-9]*x[0-9][0-9]*[^ ]*')
 	for RES in $SR; do
 		SRA=(${RES//[x+]/ })
@@ -204,8 +203,7 @@ update() {
 		echo "SRA[2]: ${SRA[1]}"
 		echo "MX: $MX, MY:$MY"
 		CX=$(($(logical_px $MX 1) - 24))
-		CY=$((SRA[1] - $(logical_px $MY 2) + 5))
-		rectangles+="rectangle $CX,$CY $((CX+$(logical_px 300 1))),$((CY-$(logical_px 80 2))) "
+		CY=$((SRA[1] - $(logical_px $MY 2) - 277))
 	done
 
 	# User supplied Image
@@ -239,20 +237,20 @@ update() {
 	echo
 	echo 'Converting provided image to match your resolution...'
 	# resize image
-	convert "$orig_wall" -resize "$res""^" -gravity center -extent "$res" "$resized"
+	magick convert "$orig_wall" -resize "$res""^" -gravity center -extent "$res" "$resized"
 
 	echo
 	echo 'Applying dim, blur, and pixelation effect to resized image'
 	# dim
-	convert "$resized" -fill black -colorize 40% "$dim"
+	magick convert "$resized" -fill black -colorize 40% "$dim"
 
 	# pixel
-	convert -scale 10% -scale 1000% "$resized" "$pixel"
+	magick convert -scale 10% -scale 1000% "$resized" "$pixel"
 
 	# blur
 	blur_shrink=$(echo "scale=2; 20 / $blur_level" | bc)
 	blur_sigma=$(echo "scale=2; 0.6 * $blur_level" | bc)
-	convert "$resized" \
+	magick convert "$resized" \
 		-filter Gaussian \
 		-resize "$blur_shrink%" \
 		-define "filter:sigma=$blur_sigma" \
@@ -260,7 +258,7 @@ update() {
 		"$blur"
 
 	# dimblur
-	convert "$dim" \
+	magick convert "$dim" \
 		-filter Gaussian \
 		-resize "$blur_shrink%" \
 		-define "filter:sigma=$blur_sigma" \
@@ -272,24 +270,19 @@ update() {
 	echo
 	echo 'Caching images for faster screen locking'
 	# resized
-	#convert "$resized" -draw "fill #$loginbox $rectangles" "$l_resized"
-	convert "$resized" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_resized"
+	magick convert "$resized" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_resized"
 
 	# dim
-	#convert "$dim" -draw "fill #$loginbox $rectangles" "$l_dim"
-	convert "$dim" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_dim"
+	magick convert "$dim" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_dim"
 
 	# blur
-	#convert "$blur" -draw "fill #$loginbox $rectangles" "$l_blur"
-	convert "$blur" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_blur"
+	magick convert "$blur" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_blur"
 
 	# dimblur
-	#convert "$dimblur" -draw "fill #$loginbox $rectangles" "$l_dimblur"
-	convert "$dimblur" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_dimblur"
+	magick convert "$dimblur" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_dimblur"
 
 	# pixel
-	#convert "$pixel" -draw "fill #$loginbox $rectangles" "$l_pixel"
-	convert "$pixel" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_pixel"
+	magick convert "$pixel" /usr/local/src/betterlockscreen/lock.png -geometry +$CX+$CY -composite "$l_pixel"
 	echo
 	echo 'All required changes have been applied'
 }
